@@ -15,7 +15,6 @@ class Game
     correct_word = hidden_word.split('')               # split the word into an array of letters
     hidden_word = hidden_word.downcase.gsub(/[a-z]/, '_')     # replace the letters by _
     puts hidden_word
-    puts correct_word.join()                    # print the original word as a string
     play(correct_word, hidden_word)
   end
 
@@ -25,11 +24,11 @@ class Game
     loop do
       puts "Enter a letter: "
       input = gets.chomp.downcase
-      if(used_letters.join().include?(input))
+      if(used_letters.join().include?(input))                     # check for same letter
         puts "\e[31m Please enter a different letter!! \e[0m"
         next
       end
-      break if input.match?(/\A[a-z]\z/)
+      break if input.match?(/\A[a-z]\z/)                          # check for single letter
       puts "\e[31m Invalid input! Please enter a single letter!!\e[0m"
     end
 
@@ -43,16 +42,15 @@ class Game
     while count < 10
       puts "\n"
       input = user_input(used_letters)
-      used_letters << input
+      used_letters << input               # adding the user input to the array
 
       if(correct_word.include?(input))
         puts "\e[44mCorrect Guess!\e[0m"
         replace_letter(input, correct_word, hidden_word)
-
         if hidden_word.include?('_')
           next
         else
-          won(count)
+          won?
           break
         end
       else
@@ -63,25 +61,27 @@ class Game
       puts "\e[31mRemaining tries: #{10 - count}\e[0m" unless count == 9
     end
     if count == 10
-          lose(correct_word)
-        end
+      lose?
+      puts "The correct word is: \e[31m#{correct_word.join()}\e[0m"
+    end
 
   end
 
-  def replace_letter(input, correct_word, hidden_word)
+  def replace_letter(input, correct_word, hidden_word)    # replace _ with correct letter
     correct_word.each_with_index do |letter, index|
       hidden_word[index] = input if letter == input
     end
     p hidden_word
   end
 
-  def won(count)
+  def won?
     puts "You guessed the word correctly! You win!! "
+    true
   end
 
-  def lose(correct_word)
+  def lose?
     puts "\e[31m You lost!! \e[0m"
-    puts "The correct word is: \e[31m#{correct_word.join()}\e[0m"
+    true
   end
 end
 
